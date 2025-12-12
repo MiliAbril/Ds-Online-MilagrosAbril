@@ -40,7 +40,7 @@ def pinta_distribucion_categoricas(df, columnas_categoricas, relativa=False, mos
     plt.show()
 
 
-def plot_categorical_relationship_fin(df, cat_col1, cat_col2, relative_freq=False, show_values=False, size_group = 5):
+def plot_categorical_relationship_fin(df, cat_col1, cat_col2, relative_freq=False, show_values=False, size_group = 5,colores):
     # Prepara los datos
     count_data = df.groupby([cat_col1, cat_col2]).size().reset_index(name='count')
     total_counts = df[cat_col1].value_counts()
@@ -60,8 +60,8 @@ def plot_categorical_relationship_fin(df, cat_col1, cat_col2, relative_freq=Fals
             data_subset = count_data[count_data[cat_col1].isin(categories_subset)]
 
             # Crea el gráfico
-            plt.figure(figsize=(10, 6))
-            ax = sns.barplot(x=cat_col1, y='count', hue=cat_col2, data=data_subset, order=categories_subset)
+            fig = plt.figure(figsize=(10, 6))
+            ax = sns.barplot(x=cat_col1, y='count', hue=cat_col2, data=data_subset, order=categories_subset,colors =colores)
 
             # Añade títulos y etiquetas
             plt.title(f'Relación entre {cat_col1} y {cat_col2} - Grupo {i + 1}')
@@ -80,8 +80,8 @@ def plot_categorical_relationship_fin(df, cat_col1, cat_col2, relative_freq=Fals
             plt.show()
     else:
         # Crea el gráfico para menos de size_group categorías
-        plt.figure(figsize=(10, 6))
-        ax = sns.barplot(x=cat_col1, y='count', hue=cat_col2, data=count_data)
+        fig = plt.figure(figsize=(10, 6))
+        ax = sns.barplot(x=cat_col1, y='count', hue=cat_col2, data=count_data,colors=colores)
 
         # Añade títulos y etiquetas
         plt.title(f'Relación entre {cat_col1} y {cat_col2}')
@@ -98,6 +98,7 @@ def plot_categorical_relationship_fin(df, cat_col1, cat_col2, relative_freq=Fals
 
         # Muestra el gráfico
         plt.show()
+        return fig
 
 
 def plot_categorical_numerical_relationship(df, categorical_col, numerical_col, show_values=False, measure='mean'):
