@@ -84,19 +84,19 @@ def transformer_cpu(df: pd.DataFrame, col: str = "Cpu"):
     s = df[col].fillna("").astype(str).str.strip()
     s_low = s.str.lower()
 
-    # ---- marca ----
+    # marca
     CPU_Intel = s_low.str.contains("intel", regex=False).astype(int)
     CPU_AMD   = s_low.str.contains("amd", regex=False).astype(int)
     CPU_Other = ((CPU_Intel == 0) & (CPU_AMD == 0)).astype(int)
 
-    # ---- ordinal por familia ----
-    # 1) Intel Core i3/i5/i7/i9 -> guardar 3/5/7/9
+    # ordinal por familia
+    # 1) Intel Core i3/i5/i7/i9 
     core = pd.to_numeric(
         s_low.str.extract(r"core\s+i\s*([3579])", expand=False),
         errors="coerce"
     )
 
-    # 2) Intel Core M (M3/M5/M7) -> guardar 3/5/7
+    # 2) Intel Core M (M3/M5/M7) 
     corem = pd.to_numeric(
         s_low.str.extract(r"core\s+m\s*(?:m)?\s*([357])\b", expand=False),
         errors="coerce"
@@ -108,19 +108,19 @@ def transformer_cpu(df: pd.DataFrame, col: str = "Cpu"):
         errors="coerce"
     )
 
-    # 4) AMD A-Series A6/A8/A9/A10/A12 -> guardar 6/8/9/10/12
+    # 4) AMD A-Series A6/A8/A9/A10/A12 
     aseries = pd.to_numeric(
         s_low.str.extract(r"\ba\s*(6|8|9|10|12)\b", expand=False),
         errors="coerce"
     )
 
-    # Convertimos NaN -> 0 (como en tu lógica inicial)
+    
     CPU_Core_Ord    = core.fillna(0).astype(int)
     CPU_CoreM_Ord   = corem.fillna(0).astype(int)
     CPU_Ryzen_Ord   = ryzen.fillna(0).astype(int)
     CPU_ASeries_Ord = aseries.fillna(0).astype(int)
 
-    # ---- flags de otras familias (solo cuando NO hay Core/CoreM/Ryzen/A-Series) ----
+    # flags de otras familias
     has_main_family = (
         (CPU_Core_Ord > 0) |
         (CPU_CoreM_Ord > 0) |
